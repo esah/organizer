@@ -8,6 +8,7 @@ public class Company {
 
 	public Company() {
 	}
+
 	public Company(final String name) {
 		this.name = name;
 	}

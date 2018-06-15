@@ -1,7 +1,9 @@
 package organizer.model;
 
 import java.util.Date;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 public class Appointment {
 	private Long id;
 	private Date date;
@@ -67,4 +69,6 @@ public class Appointment {
 	public void setConfirmed(final boolean confirmed) {
 		this.confirmed = confirmed;
 	}
+
+
 }

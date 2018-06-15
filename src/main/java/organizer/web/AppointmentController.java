@@ -2,6 +2,7 @@ package organizer.web;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import organizer.dao.AppointmentRepository;
+import organizer.dto.AppointmentFlat;
+import organizer.dto.AppointmentMapper;
 import organizer.model.Appointment;
 import organizer.model.User;
 
@@ -40,6 +43,13 @@ public class AppointmentController {
 	@GetMapping
 	public Collection<Appointment> list(@RequestParam("userId") long userId) {
 		return getUser(userId).getAppointments();
+	}
+
+	@GetMapping(produces = "text/csv", params = "csv")
+	public Collection<AppointmentFlat> listCsv(@RequestParam("userId") long userId) {
+		final Collection<Appointment> appointments = getUser(userId).getAppointments();
+		return appointments.stream().map(AppointmentMapper.INSTANCE::toFlat).collect(Collectors
+				.toList());
 	}
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)

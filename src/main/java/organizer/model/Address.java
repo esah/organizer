@@ -3,11 +3,6 @@ package organizer.model;
 public class Address {
 
 	private String postalCode;
-	/*
-		private String country;
-		private String region;
-		private String city;
-	*/
 	private String locality;
 	private String street;
 	private String house;
