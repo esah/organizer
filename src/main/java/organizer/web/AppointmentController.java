@@ -47,8 +47,7 @@ public class AppointmentController {
 
 	@GetMapping(produces = "text/csv", params = "csv")
 	public Collection<AppointmentFlat> listCsv(@RequestParam("userId") long userId) {
-		final Collection<Appointment> appointments = getUser(userId).getAppointments();
-		return appointments.stream().map(AppointmentMapper.INSTANCE::toFlat).collect(Collectors
+		return list(userId).stream().map(AppointmentMapper.INSTANCE::toFlat).collect(Collectors
 				.toList());
 	}
 
