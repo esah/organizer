@@ -12,16 +12,22 @@ import organizer.model.Appointment;
 import organizer.model.Company;
 import organizer.model.Person;
 import organizer.model.Phone;
+import organizer.model.User;
 
 public class Demo {
 	private static final Logger LOG = LoggerFactory.getLogger(Demo.class);
 
 
 	public static void run(final RestTemplate restTemplate) {
+		//init user
+		final User user = restTemplate
+				.postForObject("http://localhost:8080/users",
+						null, User.class);
+
 		//create
 		final Appointment demoAppointment = createDemoAppointment();
 		final Appointment appointment = restTemplate
-				.postForObject("http://localhost:8080/appointments?userId=1",
+				.postForObject("http://localhost:8080/appointments?userId=" + user.getId(),
 						demoAppointment, Appointment.class);
 
 		//update
@@ -30,7 +36,7 @@ public class Demo {
 		Map<String, Object> params = new HashMap<>();
 		params.put("id", appointment.getId());
 
-		restTemplate.put("http://localhost:8080/appointments/{id}?userId=1",
+		restTemplate.put("http://localhost:8080/appointments/{id}?userId=" + user.getId(),
 				appointment,  params);
 
 
@@ -40,13 +46,15 @@ public class Demo {
 		updates.put("note", "Everything went perfectly well");
 
 		final Appointment confirmedAppointment = restTemplate
-				.patchForObject("http://localhost:8080/appointments/{id}?userId=1",
+				.patchForObject("http://localhost:8080/appointments/{id}?userId=" + user.getId(),
 						updates, Appointment.class, params);
 		assert confirmedAppointment.isConfirmed();
 
 		final Collection appointments = restTemplate
-				.getForObject("http://localhost:8080/appointments?userId=1", Collection.class);
-		LOG.info("GET http://localhost:8080/appointments?userId=1\n" + appointments.toString());
+				.getForObject("http://localhost:8080/appointments?userId=" +
+						user.getId(), Collection.class);
+		LOG.info("GET http://localhost:8080/appointments?userId=" + user.getId() + "\n" +
+				appointments.toString());
 	}
 
 

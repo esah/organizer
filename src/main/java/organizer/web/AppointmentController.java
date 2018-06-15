@@ -2,7 +2,6 @@ package organizer.web;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -17,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import organizer.dao.AppointmentRepository;
-import organizer.model.User;
 import organizer.model.Appointment;
+import organizer.model.User;
 
 @RestController
 @RequestMapping(value = "appointments", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -30,11 +29,10 @@ public class AppointmentController {
 		this.appointmentRepo = appointmentRepo;
 	}
 
-	private User getUser(final @RequestParam("userId") long userId) {
+	private User getUser(final long userId) {
 		final User user = appointmentRepo.findUser(userId);
 		if (user == null) {
-			throw new HttpMessageNotReadableException(String
-					.format("User %1s not found", userId));
+			throw new HttpMessageNotReadableException(String.format("User %1s not found", userId));
 		}
 		return user;
 	}
@@ -42,11 +40,6 @@ public class AppointmentController {
 	@GetMapping
 	public Collection<Appointment> list(@RequestParam("userId") long userId) {
 		return getUser(userId).getAppointments();
-	}
-
-	@GetMapping("upcoming")
-	public Collection<Appointment> listUpcoming(@RequestParam("userId") long userId) {
-		return list(userId).stream().filter(a -> !a.isConfirmed() && !a.isCancelled()).collect(Collectors.toList());
 	}
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
